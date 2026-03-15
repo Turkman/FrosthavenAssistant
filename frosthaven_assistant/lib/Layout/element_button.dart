@@ -105,7 +105,8 @@ class AnimatedContainerButtonState extends State<ElementButton> {
               });
             },
             onTap: () {
-              if (_gameState.elementState[widget.element] ==
+               print('ELEMENT TAP: ${widget.element}');
+		 if (_gameState.elementState[widget.element] ==
                   ElementState.half) {
                 _gameState.action(UseElementCommand(widget.element));
               } else if (_gameState.elementState[widget.element] ==

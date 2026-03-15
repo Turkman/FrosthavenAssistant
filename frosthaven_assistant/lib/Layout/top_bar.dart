@@ -24,11 +24,21 @@ class TopBar extends StatelessWidget {
           );
           return AppBar(
             iconTheme: const IconThemeData(color: Colors.white),
-            leading: IconButton(
-              //could modify constraints to make the button take less space when small, but could potentially cause issues
-              padding: EdgeInsets.all(min(8.0 * userScaling, 8.0)),
-              icon: Icon(Icons.menu, shadows: [shadow], size: 24 * userScaling),
-              onPressed: () => Scaffold.of(context).openDrawer(),
+            leading: Listener(
+              behavior: HitTestBehavior.opaque,
+              onPointerUp: (event) {
+                print('HAMBURGER POINTER: ${event.localPosition}');
+                // Filter out phantom events at (0,0) caused by Flutter/iPadOS bug
+                if (event.localPosition.dx > 0 || event.localPosition.dy > 0) {
+                  Scaffold.of(context).openDrawer();
+                } else {
+                  print('IGNORED phantom (0,0) event');
+                }
+              },
+              child: Container(
+                alignment: Alignment.center,
+                child: Icon(Icons.menu, shadows: [shadow], size: 24 * userScaling),
+              ),
             ),
             title: Container(
               padding: EdgeInsets.only(left: 2.0 * userScaling),

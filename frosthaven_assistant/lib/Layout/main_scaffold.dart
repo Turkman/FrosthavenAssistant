@@ -22,22 +22,9 @@ import 'menus/main_menu.dart';
 class MainScaffold extends StatelessWidget {
   const MainScaffold({super.key});
 
-  /// Detects if the current device is an iPad.
-  /// iPad has a shortestSide >= 600 and runs iOS.
-  static bool _isIPad(BuildContext context) {
-    // Check if it's iOS first
-    if (!Platform.isIOS) return false;
-
-    // Check if it's a tablet-sized device (iPad)
-    final shortestSide = MediaQuery.of(context).size.shortestSide;
-    return shortestSide >= 600;
-  }
-
   @override
   Widget build(BuildContext context) {
     setupMoreGetIt(context);
-
-    final bool isIPad = _isIPad(context);
 
     return ValueListenableBuilder<double>(
         valueListenable: getIt<Settings>().userScalingBars,
@@ -48,11 +35,6 @@ class MainScaffold extends StatelessWidget {
               maintainBottomViewPadding: true,
               child: Scaffold(
                   resizeToAvoidBottomInset: false,
-                  // FIX: Disable drawer edge drag on iPad to prevent gesture conflicts
-                  // with element buttons and other UI elements in the top bar.
-                  // Setting to 0 disables the edge swipe entirely on iPad.
-                  // On other platforms, null uses the default behavior.
-                  drawerEdgeDragWidth: isIPad ? 0.0 : null,
                   bottomNavigationBar: RepaintBoundary(child: BottomBar()),
                   appBar: PreferredSize(
                       preferredSize: Size(double.infinity,
@@ -104,7 +86,7 @@ class MainScaffoldBody extends StatelessWidget {
     bool hasLootDeck = GameMethods.hasLootDeck();
     double sectionWidth = screenWidth;
     if (hasLootDeck) {
-      sectionWidth -= 94 * barScale; //width of loot deck
+      sectionWidth -= 94 * barScale;
     }
 
     final chars = GameMethods.getCurrentCharacters();
@@ -121,7 +103,7 @@ class MainScaffoldBody extends StatelessWidget {
     if (!modFitsOnBar ||
         GameMethods.shouldShowAlliesDeck() ||
         perksAvailable && getIt<Settings>().showAmdDeck.value) {
-      sectionWidth -= 153 * barScale; //width of amd
+      sectionWidth -= 153 * barScale;
     }
 
     return sectionWidth;
@@ -172,7 +154,6 @@ class MainScaffoldBody extends StatelessWidget {
 
                           var sectionWidth = getSectionWidth(context);
 
-                          //move to separate row if it doesn't fit
                           bool sectionsOnSeparateRow = false;
                           int? nrOfSections = getNrOfSections();
                           if ((nrOfSections != null &&
@@ -181,7 +162,6 @@ class MainScaffoldBody extends StatelessWidget {
                               (nrOfSections != null &&
                                   nrOfSections > 2 &&
                                   sectionWidth < 58 * barScale * 2)) {
-                            //in case doesn't fit
                             sectionsOnSeparateRow = true;
                             sectionWidth = MediaQuery.of(context).size.width;
                           }
@@ -221,7 +201,7 @@ class MainScaffoldBody extends StatelessWidget {
                                               )),
                                         if (!modFitsOnBar &&
                                             gameState.currentCampaign.value !=
-                                                "Buttons and Bugs" && //hide amd deck for buttons and bugs
+                                                "Buttons and Bugs" &&
                                             getIt<Settings>().showAmdDeck.value)
                                           Container(
                                               margin: EdgeInsets.only(
